@@ -22,6 +22,13 @@ window.startAudioListen = (obj, numberOfInputChannels, sampleRate, bufferSize) =
         navigator.mozGetUserMedia ||
         navigator.msGetUserMedia;
 
+    if (!navigator.getUserMedia) {
+        _dotNetRef.invokeMethodAsync(
+            'OnStartAudioListenError',
+            'navigator.getUserMedia is null');
+        return;
+	}
+
     navigator.getUserMedia({
         audio: true
     },
