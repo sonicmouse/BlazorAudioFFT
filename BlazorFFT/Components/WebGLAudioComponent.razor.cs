@@ -9,6 +9,7 @@ namespace BlazorFFT.Components
 	public class WebGLAudioComponentBase : AudioComponentBase<WebGLContext>
 	{
 		protected override int SpectrumSize => 25;
+		protected override double AudioAmplify => 5.0;
 
 		private AudioFFTGLProgram _program;
 
