@@ -11,7 +11,7 @@ namespace BlazorFFT.Interop
 	/// each of your method implementations or they will *not* fire.
 	/// Sometimes I wish method attributes were inherited.
 	/// </summary>
-	public interface IJSAudioInteropDelegate
+	public interface IJSAudio2InteropDelegate
 	{
 		[JSInvokable]
 		Task OnStartAudioListenError(string message);
@@ -23,42 +23,42 @@ namespace BlazorFFT.Interop
 		Task OnAudioBufferReceived(object audioBuffer32bitJson);
 	}
 
-	public interface IJSAudioInterop
+	public interface IJSAudio2Interop
 	{
 		ValueTask<bool> HasAudioListenStartedAsync();
-		ValueTask StartAudioListenAsync(
-			IJSAudioInteropDelegate @delegate, int inputChannels, double sampleRate, int bufferSize);
+		ValueTask InitializeAudioListenAsync(
+			IJSAudio1InteropDelegate @delegate, int inputChannels, double sampleRate, int bufferSize);
 		ValueTask StopAudioListenAsync();
 		double[] ConvertJSFloat32ArrayToManaged(object audioBufferFloat32, double amp);
 	}
 
-	public sealed class JSAudioInterop : IJSAudioInterop
+	public sealed class JSAudio2Interop : IJSAudio2Interop
 	{
 		private readonly IJSRuntime _jsRuntime;
 
-		public JSAudioInterop(IJSRuntime jsRuntime)
+		public JSAudio2Interop(IJSRuntime jsRuntime)
 		{
 			_jsRuntime = jsRuntime;
 		}
 
-		public ValueTask StartAudioListenAsync(
-			IJSAudioInteropDelegate @delegate, int inputChannels, double sampleRate, int bufferSize) =>
+		public ValueTask InitializeAudioListenAsync(
+			IJSAudio1InteropDelegate @delegate, int inputChannels, double sampleRate, int bufferSize) =>
 			_jsRuntime.InvokeVoidAsync(
-				"startAudioListen", DotNetObjectReference.Create(@delegate),
+				"initializeAudio2Listen", DotNetObjectReference.Create(@delegate),
 				inputChannels, sampleRate, bufferSize);
 
 		public ValueTask<bool> HasAudioListenStartedAsync() =>
-			_jsRuntime.InvokeAsync<bool>("hasAudioListenStarted");
+			_jsRuntime.InvokeAsync<bool>("hasAudio2ListenStarted");
 
 		public ValueTask StopAudioListenAsync() =>
-			_jsRuntime.InvokeVoidAsync("stopAudioListen");
+			_jsRuntime.InvokeVoidAsync("stopAudio2Listen");
 
 		public double[] ConvertJSFloat32ArrayToManaged(object audioBufferFloat32, double amp)
 		{
 			audioBufferFloat32 = audioBufferFloat32 ??
 				throw new ArgumentNullException(nameof(audioBufferFloat32));
 
-			if(audioBufferFloat32.GetType() == typeof(JsonElement))
+			if (audioBufferFloat32.GetType() == typeof(JsonElement))
 			{
 				// there *must* be a better way to do this. Tracking here:
 				// https://stackoverflow.com/questions/63759822/blazor-webassembly-send-float32array-from-javascript-to-net

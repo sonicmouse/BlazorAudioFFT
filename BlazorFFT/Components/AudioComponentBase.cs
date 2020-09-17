@@ -11,11 +11,11 @@ using System.Threading.Tasks;
 namespace BlazorFFT.Components
 {
 	public abstract class AudioComponentBase<TRenderingContext>
-		: ComponentBase, IJSAudioInteropDelegate, IJSSizeInteropDelegate
+		: ComponentBase, IJSAudio1InteropDelegate, IJSSizeInteropDelegate
 			where TRenderingContext : RenderingContext
 	{
 		[Inject]
-		private IJSAudioInterop AudioInterop { get; set; }
+		private IJSAudio2Interop AudioInterop { get; set; }
 
 		[Inject]
 		private IJSSizeInterop SizeInterop { get; set; }
@@ -59,7 +59,7 @@ namespace BlazorFFT.Components
 			_audioFilter.SetPassBands(1, _audioFilter.MaximumBandValue);
 
 			// start listening for audio
-			await AudioInterop.StartAudioListenAsync(
+			await AudioInterop.InitializeAudioListenAsync(
 					@delegate: this, inputChannels: 1, sampleRate: SampleRate, bufferSize: BufferSize);
 
 			// start listening for resize events
