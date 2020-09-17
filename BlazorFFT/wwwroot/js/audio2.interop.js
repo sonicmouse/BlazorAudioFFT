@@ -48,21 +48,7 @@ _dotNetAudio2 = {
 function startAudio2Listen() {
     if (!_dotNetAudio2.hasInitialized()) { return; }
 
-    // derive getUserMedia
-    navigator.getUserMedia =
-        navigator.getUserMedia ||
-        navigator.webkitGetUserMedia ||
-        navigator.mozGetUserMedia ||
-        navigator.msGetUserMedia;
-
-    // if it's not avaliable, just leave
-    if (!navigator.getUserMedia) {
-        _dotNetAudio2.sendErrorMessage('navigator.getUserMedia is null');
-        return;
-    }
-
-    // call it.
-    navigator.getUserMedia({
+    navigator.mediaDevices.getUserMedia({
         audio: true
     },
         function (e) { // success
