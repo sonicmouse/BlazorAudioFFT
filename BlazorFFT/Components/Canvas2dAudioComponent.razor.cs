@@ -16,7 +16,7 @@ namespace BlazorFFT.Components
 		protected override double SampleRate => 44100;
 		protected override int BufferSize => 256;
 		protected override int SpectrumSize => 25;
-		protected override double AudioAmplify => 25;
+		protected override double AudioAmplify => 15;
 
 		protected override Task<Canvas2DContext> CreateRenderingContextAsync(BECanvasComponent canvas)
 		{
