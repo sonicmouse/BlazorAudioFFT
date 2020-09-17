@@ -1,4 +1,6 @@
 ﻿html, body {
+    height:100%;
+    margin:0;
     overflow: hidden;
     font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     font-size:16px;
@@ -22,17 +24,23 @@ a:active {
 }
 
 .divMain {
-    width: 240px;
-    height: 400px;
+    width: 300px;
+    height: 350px;
     position: fixed;
-    margin-left: -120px;
-    margin-top: -200px;
+    margin-left: -150px;
+    margin-top: -175px;
     top: 50%;
     left: 50%;
 }
 
+.rowImage {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
 .imgBlazor {
-    width: 100%;
+    width: 150px;
     display: block;
 }
 
@@ -43,9 +51,12 @@ a:active {
 }
 
 .rowInfo {
+    border-top: 1px dashed lightgray;
+    border-bottom: 1px dashed lightgray;
+    padding-top: 4px;
+    padding-bottom: 4px;
     text-align: center;
     font-size: smaller;
-    margin: 4px;
 }
 
 .rowLink {
@@ -55,13 +66,24 @@ a:active {
 
 .rowSep {
     margin-top: 10px;
-    border-top: 1px solid lightgray;
+    border-top: 1px dashed lightgray;
 }
 
 .rowFoot {
     margin:4px;
     font-size: smaller;
     text-align: center;
+}
+
+.centerButtonDiv {
+    min-height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.centerButtonDivHide {
+    display:none;
 }
 
 #blazor-error-ui {

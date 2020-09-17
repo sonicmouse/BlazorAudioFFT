@@ -1,3 +1,7 @@
 ﻿@inherits Canvas2dAudioComponentBase
-<button @onclick="OnStartListeningToAudio" type="button">Test</button>
-<BECanvas Width="100" Height="100" @ref="_canvasReference" ></BECanvas>
+
+<div class="@_centerButtonDivClass">
+	<button @onclick="OnStartListeningToAudio" type="button">Start 2D Audio FFT</button>
+</div>
+
+<BECanvas Width="0" Height="0" @ref="_canvasReference" ></BECanvas>

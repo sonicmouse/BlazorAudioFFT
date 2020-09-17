@@ -23,6 +23,9 @@ namespace BlazorFFT.Components.WebGL
 		private GLVertexBuffer _vertexBuffer;
 		private GLIndexbuffer _indexBuffer;
 
+		private readonly Matrix4x4 _matWorld = Matrix4x4.Identity;
+		private readonly int _tickStart = Environment.TickCount;
+
 		public AudioFFTGLProgram(WebGLContext context) : base(context)
 		{
 		}
@@ -62,14 +65,13 @@ namespace BlazorFFT.Components.WebGL
 
 		public async Task UpdateSizeAsync(int width, int height)
 		{
+			if(height <= 0) { return; }
+
 			await _context.ViewportAsync(0, 0, width, height);
 
 			var mProj = Matrix4x4.CreatePerspectiveFieldOfView(ConvertToRadians(45f), width / (float)height, .1f, 1000f);
 			await _context.UniformMatrixAsync(_matLocProj, false, mProj.Values1D());
 		}
-
-		private readonly Matrix4x4 _matWorld = Matrix4x4.Identity;
-		private readonly int _tickStart = Environment.TickCount;
 
 		protected override async Task OnRenderAsync(bool firstRender, int width, int height)
 		{
@@ -88,11 +90,10 @@ namespace BlazorFFT.Components.WebGL
 				await UpdateSizeAsync(width, height);
 			}
 
-			// reset
+			if (SpectrumBuffer == null || SpectrumBuffer.Length != 25) { return; } // must match x/y iterations below
+
 			await _context.ClearColorAsync(0.184f, 0.310f, 0.310f, 1f);
 			await _context.ClearAsync(BufferBits.COLOR_BUFFER_BIT | BufferBits.DEPTH_BUFFER_BIT);
-
-			if (SpectrumBuffer == null || SpectrumBuffer.Length != 25) { return; } // must match x/y iterations below
 
 			var rotate = (float)((Environment.TickCount - _tickStart) / 1000.0 / 6.0 * 2.0 * Math.PI);
 			var matRotate = Matrix4x4.Transpose(Matrix4x4Extensions.CreateRotate(rotate, new Vector3(.5f, 1f, -.2f)));

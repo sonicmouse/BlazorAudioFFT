@@ -15,6 +15,8 @@ namespace BlazorFFT.Components
 		: ComponentBase, IJSAudio1InteropDelegate, IJSSizeInteropDelegate
 			where TRenderingContext : RenderingContext
 	{
+		protected string _centerButtonDivClass = "centerButtonDiv";
+
 		[Inject]
 		private IJSAudio2Interop AudioInterop { get; set; }
 
@@ -51,6 +53,7 @@ namespace BlazorFFT.Components
 		protected async Task OnStartListeningToAudio(MouseEventArgs e)
 		{
 			await AudioInterop.StartAudioListenAsync();
+			_centerButtonDivClass = "centerButtonDivHide";
 		}
 
 		protected override async Task OnInitializedAsync()

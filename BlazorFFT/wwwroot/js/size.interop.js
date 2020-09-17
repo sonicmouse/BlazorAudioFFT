@@ -3,12 +3,12 @@
 }
 
 window.getWindowHeight = () => {
-    return window.innerHeight - 18;
+    return window.innerHeight;
 }
 
 window.addResizeEventCallback = (namespace, method) => {
     window.addEventListener('resize', () => {
-        DotNet.invokeMethodAsync(namespace, method, window.innerWidth, window.innerHeight - 18);
+        DotNet.invokeMethodAsync(namespace, method, window.innerWidth, window.innerHeight);
     });
 }
 
