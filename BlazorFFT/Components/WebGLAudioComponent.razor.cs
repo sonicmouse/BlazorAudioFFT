@@ -1,6 +1,7 @@
 ﻿using Blazor.Extensions;
 using Blazor.Extensions.Canvas.WebGL;
 using BlazorFFT.Components.WebGL;
+using Microsoft.JSInterop;
 using System.Diagnostics;
 using System.Threading.Tasks;
 

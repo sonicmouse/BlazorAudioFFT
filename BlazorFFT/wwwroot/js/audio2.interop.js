@@ -1,6 +1,4 @@
-﻿// Since iOS requires a user-initiated gesture to begin listening to audio, we have to
-// create a button that actually calls the method which starts the audio
-
+﻿
 _dotNetAudio2 = {
     // settings
     bufferSize: null,
@@ -62,9 +60,9 @@ window.startAudio2Listen = () => {
     if (!_dotNetAudio2.hasInitialized()) { return; }
 
     navigator.mediaDevices.getUserMedia({ audio: true })
-        .then((e) =>
+        .then((mic) =>
         {
-            _dotNetAudio2.mediaStream = _dotNetAudio2.audioContext.createMediaStreamSource(e);
+            _dotNetAudio2.mediaStream = _dotNetAudio2.audioContext.createMediaStreamSource(mic);
 
             if (_dotNetAudio2.audioContext.createScriptProcessor) {
                 _dotNetAudio2.recorder = _dotNetAudio2.audioContext.createScriptProcessor(
@@ -85,15 +83,13 @@ window.startAudio2Listen = () => {
             _dotNetAudio2.mediaStream.connect(_dotNetAudio2.recorder);
             _dotNetAudio2.recorder.connect(_dotNetAudio2.audioContext.destination);
 
-            _dotNetAudio2.sendSuccessMessage(e.id);
+            _dotNetAudio2.sendSuccessMessage(mic.id);
         })
         .catch((e) =>
         {
             _dotNetAudio2.sendErrorMessage(e.message);
         });
 }
-
-
 
 window.hasAudio2ListenStarted = () => {
     return _dotNetAudio2.hasAudioStarted();
