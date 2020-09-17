@@ -11,7 +11,7 @@ namespace BlazorFFT.Interop
 	/// each of your method implementations or they will *not* fire.
 	/// Sometimes I wish method attributes were inherited.
 	/// </summary>
-	public interface IJSAudio2InteropDelegate
+	public interface IJSAudioInteropDelegate
 	{
 		[JSInvokable]
 		Task OnStartAudioListenError(string message);
@@ -23,39 +23,37 @@ namespace BlazorFFT.Interop
 		Task OnAudioBufferReceived(object audioBuffer32bitJson);
 	}
 
-	public interface IJSAudio2Interop
+	public interface IJSAudioInterop
 	{
 		ValueTask<bool> HasAudioListenStartedAsync();
-		ValueTask InitializeAudioListenAsync(
-			IJSAudio1InteropDelegate @delegate, int inputChannels, double sampleRate, int bufferSize);
-		ValueTask StartAudioListenAsync();
+		ValueTask InitializeAudioListenAsync(int inputChannels, double sampleRate, int bufferSize);
+		ValueTask StartAudioListenAsync(IJSAudioInteropDelegate @delegate);
 		ValueTask StopAudioListenAsync();
 		double[] ConvertJSFloat32ArrayToManaged(object audioBufferFloat32, double amp);
 	}
 
-	public sealed class JSAudio2Interop : IJSAudio2Interop
+	public sealed class JSAudioInterop : IJSAudioInterop
 	{
 		private readonly IJSRuntime _jsRuntime;
 
-		public JSAudio2Interop(IJSRuntime jsRuntime)
+		public JSAudioInterop(IJSRuntime jsRuntime)
 		{
 			_jsRuntime = jsRuntime;
 		}
 
 		public ValueTask InitializeAudioListenAsync(
-			IJSAudio1InteropDelegate @delegate, int inputChannels, double sampleRate, int bufferSize) =>
+			int inputChannels, double sampleRate, int bufferSize) =>
 			_jsRuntime.InvokeVoidAsync(
-				"initializeAudio2Listen", DotNetObjectReference.Create(@delegate),
-				inputChannels, sampleRate, bufferSize);
+				"initializeAudioListen", inputChannels, sampleRate, bufferSize);
 
-		public ValueTask StartAudioListenAsync() =>
-			_jsRuntime.InvokeVoidAsync("startAudio2Listen");
+		public ValueTask StartAudioListenAsync(IJSAudioInteropDelegate @delegate) =>
+			_jsRuntime.InvokeVoidAsync("startAudioListen", DotNetObjectReference.Create(@delegate));
 
 		public ValueTask<bool> HasAudioListenStartedAsync() =>
-			_jsRuntime.InvokeAsync<bool>("hasAudio2ListenStarted");
+			_jsRuntime.InvokeAsync<bool>("hasAudioListenStarted");
 
 		public ValueTask StopAudioListenAsync() =>
-			_jsRuntime.InvokeVoidAsync("stopAudio2Listen");
+			_jsRuntime.InvokeVoidAsync("stopAudioListen");
 
 		public double[] ConvertJSFloat32ArrayToManaged(object audioBufferFloat32, double amp)
 		{

@@ -12,13 +12,13 @@ using System.Threading.Tasks;
 namespace BlazorFFT.Components
 {
 	public abstract class AudioComponentBase<TRenderingContext>
-		: ComponentBase, IJSAudio1InteropDelegate, IJSSizeInteropDelegate
+		: ComponentBase, IJSAudioInteropDelegate, IJSSizeInteropDelegate
 			where TRenderingContext : RenderingContext
 	{
 		protected string _centerButtonDivClass = "centerButtonDiv";
 
 		[Inject]
-		private IJSAudio2Interop AudioInterop { get; set; }
+		private IJSAudioInterop AudioInterop { get; set; }
 
 		[Inject]
 		private IJSSizeInterop SizeInterop { get; set; }
@@ -52,7 +52,7 @@ namespace BlazorFFT.Components
 
 		protected async Task OnStartListeningToAudio(MouseEventArgs e)
 		{
-			await AudioInterop.StartAudioListenAsync();
+			await AudioInterop.StartAudioListenAsync(@delegate: this);
 			_centerButtonDivClass = "centerButtonDivHide";
 		}
 
@@ -69,7 +69,7 @@ namespace BlazorFFT.Components
 
 			// start listening for audio
 			await AudioInterop.InitializeAudioListenAsync(
-					@delegate: this, inputChannels: 1, sampleRate: SampleRate, bufferSize: BufferSize);
+				inputChannels: 1, sampleRate: SampleRate, bufferSize: BufferSize);
 
 			// start listening for resize events
 			await SizeInterop.StartNotifyResizeEventAsync(this);
