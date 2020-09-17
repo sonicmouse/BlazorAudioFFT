@@ -25,7 +25,7 @@ namespace BlazorFFT.WebGL.GLShaders
 
 			var shader = await _context.CreateShaderAsync(_shaderType);
 
-			await _context.ShaderSourceAsync(shader, await ResourceLoader.LoadTextAsync(resourceName));
+			await _context.ShaderSourceAsync(shader, await ResourceLoader.LoadAsTextAsync(resourceName));
 			await _context.CompileShaderAsync(shader);
 			if (!await _context.GetShaderParameterAsync<bool>(shader, ShaderParameter.COMPILE_STATUS))
 			{

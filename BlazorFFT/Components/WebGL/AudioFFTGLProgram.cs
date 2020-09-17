@@ -46,12 +46,13 @@ namespace BlazorFFT.Components.WebGL
 		{
 			_vertexBuffer = new GLVertexBuffer(_context, program);
 			await _vertexBuffer.ConsumeAndBindBufferAsync(
-				await ResourceLoader.LoadAsJson<VertexBufferModel>(
+				await ResourceLoader.LoadAsJsonAsync<VertexBufferModel>(
 				"BlazorFFT.Components.WebGL.JSON.BoxVertexBuffer.json"));
 			_vertexBuffer.ThrowIfNotValid();
 
 			_indexBuffer = new GLIndexbuffer(_context);
-			await _indexBuffer.ConsumeAndBindBufferAsync(await ResourceLoader.LoadAsJson<IndexBufferModel>(
+			await _indexBuffer.ConsumeAndBindBufferAsync(
+				await ResourceLoader.LoadAsJsonAsync<IndexBufferModel>(
 				"BlazorFFT.Components.WebGL.JSON.BoxIndexBuffer.json"));
 			_indexBuffer.ThrowIfNotValid();
 
@@ -94,6 +95,9 @@ namespace BlazorFFT.Components.WebGL
 
 			await _context.ClearColorAsync(0.184f, 0.310f, 0.310f, 1f);
 			await _context.ClearAsync(BufferBits.COLOR_BUFFER_BIT | BufferBits.DEPTH_BUFFER_BIT);
+
+			// Please note: I have no idea why I am transposing the matrix's so much. I obvioulsy don't
+			// understand how the matrix is stored in System.Numerics.Matrix4x4
 
 			var rotate = (float)((Environment.TickCount - _tickStart) / 1000.0 / 6.0 * 2.0 * Math.PI);
 			var matRotate = Matrix4x4.Transpose(Matrix4x4Extensions.CreateRotate(rotate, new Vector3(.5f, 1f, -.2f)));
