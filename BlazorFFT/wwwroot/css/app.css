@@ -1,126 +1,126 @@
 ﻿html, body {
-    height: 100%;
-    margin: 0;
-    overflow: hidden;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    font-size: 16px;
-    background-color: white;
+	height: 100%;
+	margin: 0;
+	overflow: hidden;
+	font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+	font-size: 16px;
+	background-color: white;
 }
 
 a:link {
-    color: rebeccapurple;
+	color: rebeccapurple;
 }
 
 a:visited {
-    color: rebeccapurple;
+	color: rebeccapurple;
 }
 
 a:hover {
-    color: hotpink;
+	color: hotpink;
 }
 
 a:active {
-    color: rebeccapurple;
+	color: rebeccapurple;
 }
 
 .divMain {
-    width: 300px;
-    height: 350px;
-    position: fixed;
-    margin-left: -150px;
-    margin-top: -175px;
-    top: 50%;
-    left: 50%;
+	width: 300px;
+	height: 350px;
+	position: fixed;
+	margin-left: -150px;
+	margin-top: -175px;
+	top: 50%;
+	left: 50%;
 }
 
 .rowImage {
-    display: flex;
-    justify-content: center;
-    align-items: center;
+	display: flex;
+	justify-content: center;
+	align-items: center;
 }
 
 .imgBlazor {
-    width: 150px;
-    display: block;
+	width: 150px;
+	display: block;
 }
 
 .rowTitle {
-    font-weight: bold;
-    text-align: center;
-    margin: 4px;
+	font-weight: bold;
+	text-align: center;
+	margin: 4px;
 }
 
 .rowInfo {
-    border-top: 1px dashed lightgray;
-    border-bottom: 1px dashed lightgray;
-    padding-top: 4px;
-    padding-bottom: 4px;
-    text-align: center;
-    font-size: smaller;
+	border-top: 1px dashed lightgray;
+	border-bottom: 1px dashed lightgray;
+	padding-top: 4px;
+	padding-bottom: 4px;
+	text-align: center;
+	font-size: smaller;
 }
 
 .rowLink {
-    text-align: center;
-    margin: 4px;
-    font-weight:bold;
+	text-align: center;
+	margin: 4px;
+	font-weight: bold;
 }
 
 .rowSep {
-    margin-top: 10px;
-    border-top: 1px dashed lightgray;
+	margin-top: 10px;
+	border-top: 1px dashed lightgray;
 }
 
 .rowFoot {
-    margin:4px;
-    font-size: smaller;
-    text-align: center;
+	margin: 4px;
+	font-size: smaller;
+	text-align: center;
 }
 
 .centerButtonDiv {
-    min-height: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+	min-height: 100%;
+	display: flex;
+	justify-content: center;
+	align-items: center;
 }
 
 .centerButtonDivHide {
-    display:none;
+	display: none;
 }
 
 .centerButton {
-    background-color: rebeccapurple;
-    border: none;
-    color: white;
-    padding: 15px 32px;
-    text-align: center;
-    text-decoration: none;
-    display: inline-block;
-    border-radius: 4px;
-    border: 2px solid hotpink;
-    font-weight: bold;
-    transition-duration: 0.4s;
-    box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);
+	background-color: rebeccapurple;
+	border: none;
+	color: white;
+	padding: 15px 32px;
+	text-align: center;
+	text-decoration: none;
+	display: inline-block;
+	border-radius: 4px;
+	border: 2px solid hotpink;
+	font-weight: bold;
+	transition-duration: 0.4s;
+	box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);
 }
 
 .centerButton:hover {
-    background-color: purple;
+	background-color: purple;
 }
 
 #blazor-error-ui {
-    background: lightyellow;
-    bottom: 0;
-    box-shadow: 0 -1px 2px rgba(0, 0, 0, 0.2);
-    display: none;
-    left: 0;
-    padding: 0.6rem 1.25rem 0.7rem 1.25rem;
-    position: fixed;
-    width: 100%;
-    z-index: 1000;
+	background: lightyellow;
+	bottom: 0;
+	box-shadow: 0 -1px 2px rgba(0, 0, 0, 0.2);
+	display: none;
+	left: 0;
+	padding: 0.6rem 1.25rem 0.7rem 1.25rem;
+	position: fixed;
+	width: 100%;
+	z-index: 1000;
 }
 
-#blazor-error-ui .dismiss {
-    cursor: pointer;
-    position: absolute;
-    right: 0.75rem;
-    top: 0.5rem;
-}
+	#blazor-error-ui .dismiss {
+		cursor: pointer;
+		position: absolute;
+		right: 0.75rem;
+		top: 0.5rem;
+	}

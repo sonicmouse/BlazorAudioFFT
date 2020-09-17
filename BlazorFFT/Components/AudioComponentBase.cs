@@ -67,7 +67,7 @@ namespace BlazorFFT.Components
 			// setup audio filter
 			_audioFilter.SetPassBands(1, _audioFilter.MaximumBandValue);
 
-			// start listening for audio
+			// initialize audio
 			await AudioInterop.InitializeAudioListenAsync(
 				inputChannels: 1, sampleRate: SampleRate, bufferSize: BufferSize);
 
