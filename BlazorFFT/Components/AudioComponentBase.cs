@@ -52,7 +52,7 @@ namespace BlazorFFT.Components
 
 		protected async Task OnStartListeningToAudio(MouseEventArgs e)
 		{
-			await AudioInterop.StartAudioListenAsync();
+			await AudioInterop.StartAudioListenAsync(@delegate: this);
 			_centerButtonDivClass = "centerButtonDivHide";
 		}
 
@@ -69,7 +69,7 @@ namespace BlazorFFT.Components
 
 			// start listening for audio
 			await AudioInterop.InitializeAudioListenAsync(
-					@delegate: this, inputChannels: 1, sampleRate: SampleRate, bufferSize: BufferSize);
+				inputChannels: 1, sampleRate: SampleRate, bufferSize: BufferSize);
 
 			// start listening for resize events
 			await SizeInterop.StartNotifyResizeEventAsync(this);

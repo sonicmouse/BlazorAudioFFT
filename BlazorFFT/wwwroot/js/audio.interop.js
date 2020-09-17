@@ -3,7 +3,7 @@ _dotNetAudio = {
     // settings
     bufferSize: null,
     numberOfInputChannels: null,
-    numberOfOutputChannels: 1,
+    numberOfOutputChannels: 1, // must stay 1
     // initialized
     dotNetRef: null,
     audioContext: null,
@@ -42,13 +42,10 @@ _dotNetAudio = {
 	}
 }
 
-window.initializeAudioListen = (obj, numberOfInputChannels, sampleRate, bufferSize) => {
-
-    if (_dotNetAudio.hasInitialized()) { return; }
+window.initializeAudioListen = (numberOfInputChannels, sampleRate, bufferSize) => {
 
     window.AudioContext = window.AudioContext || window.webkitAudioContext;
 
-    _dotNetAudio.dotNetRef = obj;
     _dotNetAudio.numberOfInputChannels = numberOfInputChannels;
     _dotNetAudio.bufferSize = bufferSize;
     _dotNetAudio.audioContext = new AudioContext({
@@ -56,8 +53,11 @@ window.initializeAudioListen = (obj, numberOfInputChannels, sampleRate, bufferSi
     });
 }
 
-window.startAudioListen = () => {
+window.startAudioListen = (obj) => {
+
     if (!_dotNetAudio.hasInitialized()) { return; }
+
+    _dotNetAudio.dotNetRef = obj;
 
     navigator.mediaDevices.getUserMedia({ audio: true })
         .then((mic) =>
