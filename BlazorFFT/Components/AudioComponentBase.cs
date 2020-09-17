@@ -12,13 +12,13 @@ using System.Threading.Tasks;
 namespace BlazorFFT.Components
 {
 	public abstract class AudioComponentBase<TRenderingContext>
-		: ComponentBase, IJSAudio1InteropDelegate, IJSSizeInteropDelegate
+		: ComponentBase, IJSAudioInteropDelegate, IJSSizeInteropDelegate
 			where TRenderingContext : RenderingContext
 	{
 		protected string _centerButtonDivClass = "centerButtonDiv";
 
 		[Inject]
-		private IJSAudio2Interop AudioInterop { get; set; }
+		private IJSAudioInterop AudioInterop { get; set; }
 
 		[Inject]
 		private IJSSizeInterop SizeInterop { get; set; }
