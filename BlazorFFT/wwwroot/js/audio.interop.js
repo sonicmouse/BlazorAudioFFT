@@ -44,6 +44,11 @@ _dotNetAudio = {
 
 window.initializeAudioListen = (numberOfInputChannels, sampleRate, bufferSize) => {
 
+    if (_dotNetAudio.hasAudioStarted()) {
+        console.log("ERROR: initializing while audio has already started. Exiting initialization.");
+        return;
+	}
+
     window.AudioContext = window.AudioContext || window.webkitAudioContext;
 
     _dotNetAudio.numberOfInputChannels = numberOfInputChannels;
