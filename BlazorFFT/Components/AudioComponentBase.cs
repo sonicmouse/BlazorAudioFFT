@@ -3,6 +3,7 @@ using BlazorFFT.Interop;
 using BlazorFFT.Utilities;
 using BlazorFFT.Utilities.Extensions;
 using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Web;
 using Microsoft.JSInterop;
 using System;
 using System.Diagnostics;
@@ -46,6 +47,11 @@ namespace BlazorFFT.Components
 		protected abstract Task OnResizedComponentAsync(TRenderingContext context, int width, int height);
 
 		protected abstract void OnAudioBufferProcessed(long renderTimeMilliseconds);
+
+		protected async Task OnStartListeningToAudio(MouseEventArgs e)
+		{
+			await AudioInterop.StartAudioListenAsync();
+		}
 
 		protected override async Task OnInitializedAsync()
 		{

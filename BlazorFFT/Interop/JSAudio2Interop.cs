@@ -28,6 +28,7 @@ namespace BlazorFFT.Interop
 		ValueTask<bool> HasAudioListenStartedAsync();
 		ValueTask InitializeAudioListenAsync(
 			IJSAudio1InteropDelegate @delegate, int inputChannels, double sampleRate, int bufferSize);
+		ValueTask StartAudioListenAsync();
 		ValueTask StopAudioListenAsync();
 		double[] ConvertJSFloat32ArrayToManaged(object audioBufferFloat32, double amp);
 	}
@@ -46,6 +47,9 @@ namespace BlazorFFT.Interop
 			_jsRuntime.InvokeVoidAsync(
 				"initializeAudio2Listen", DotNetObjectReference.Create(@delegate),
 				inputChannels, sampleRate, bufferSize);
+
+		public ValueTask StartAudioListenAsync() =>
+			_jsRuntime.InvokeVoidAsync("startAudio2Listen");
 
 		public ValueTask<bool> HasAudioListenStartedAsync() =>
 			_jsRuntime.InvokeAsync<bool>("hasAudio2ListenStarted");

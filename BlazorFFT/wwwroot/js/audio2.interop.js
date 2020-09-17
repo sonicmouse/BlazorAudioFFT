@@ -44,8 +44,21 @@ _dotNetAudio2 = {
 	}
 }
 
-// callback for button
-function startAudio2Listen() {
+window.initializeAudio2Listen = (obj, numberOfInputChannels, sampleRate, bufferSize) => {
+
+    if (_dotNetAudio2.hasInitialized()) { return; }
+
+    window.AudioContext = window.AudioContext || window.webkitAudioContext;
+
+    _dotNetAudio2.dotNetRef = obj;
+    _dotNetAudio2.numberOfInputChannels = numberOfInputChannels;
+    _dotNetAudio2.bufferSize = bufferSize;
+    _dotNetAudio2.audioContext = new AudioContext({
+        sampleRate: sampleRate
+    });
+}
+
+window.startAudio2Listen = () => {
     if (!_dotNetAudio2.hasInitialized()) { return; }
 
     navigator.mediaDevices.getUserMedia({ audio: true })
@@ -80,19 +93,7 @@ function startAudio2Listen() {
         });
 }
 
-window.initializeAudio2Listen = (obj, numberOfInputChannels, sampleRate, bufferSize) => {
 
-    if (_dotNetAudio2.hasInitialized()) { return; }
-    
-    window.AudioContext = window.AudioContext || window.webkitAudioContext;
-
-    _dotNetAudio2.dotNetRef = obj;
-    _dotNetAudio2.numberOfInputChannels = numberOfInputChannels;
-    _dotNetAudio2.bufferSize = bufferSize;
-    _dotNetAudio2.audioContext = new AudioContext({
-        sampleRate: sampleRate
-    });
-}
 
 window.hasAudio2ListenStarted = () => {
     return _dotNetAudio2.hasAudioStarted();
