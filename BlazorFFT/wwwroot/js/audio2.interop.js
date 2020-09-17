@@ -48,11 +48,9 @@ _dotNetAudio2 = {
 function startAudio2Listen() {
     if (!_dotNetAudio2.hasInitialized()) { return; }
 
-    navigator.mediaDevices.getUserMedia({
-        audio: true
-    },
-        function (e) { // success
-
+    navigator.mediaDevices.getUserMedia({ audio: true })
+        .then((e) =>
+        {
             _dotNetAudio2.mediaStream = _dotNetAudio2.audioContext.createMediaStreamSource(e);
 
             if (_dotNetAudio2.audioContext.createScriptProcessor) {
@@ -75,8 +73,9 @@ function startAudio2Listen() {
             _dotNetAudio2.recorder.connect(_dotNetAudio2.audioContext.destination);
 
             _dotNetAudio2.sendSuccessMessage(e.id);
-        },
-        function (e) { // failed
+        })
+        .catch((e) =>
+        {
             _dotNetAudio2.sendErrorMessage(e.message);
         });
 }
