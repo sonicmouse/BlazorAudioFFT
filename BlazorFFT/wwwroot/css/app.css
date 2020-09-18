@@ -81,6 +81,24 @@ a:active {
 	display: flex;
 	justify-content: center;
 	align-items: center;
+	position:relative;
+}
+
+.centerButtonDivBg {
+	filter: blur(8px);
+	-webkit-filter: blur(8px);
+
+	height: 100%;
+	width:100%;
+
+	background-image: url(/images/blazor.png);
+	background-position-x: -200px;
+	background-repeat: no-repeat;
+	background-position-y: 150px;
+	background-size: cover;
+
+	position: absolute;
+	opacity:0.4;
 }
 
 .centerButtonDivHide {

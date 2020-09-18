@@ -7,6 +7,7 @@ using BlazorFFT.WebGL.GLShaders;
 using BlazorFFT.WebGL.Models;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Drawing;
 using System.Numerics;
 using System.Threading.Tasks;
@@ -103,7 +104,6 @@ namespace BlazorFFT.Components.WebGL
 			var matRotate = Matrix4x4.Transpose(Matrix4x4Extensions.CreateRotate(rotate, new Vector3(.5f, 1f, -.2f)));
 			var matWorld = Matrix4x4.Transpose(_matWorld);
 
-			var ind = 0;
 			await _context.BeginBatchAsync();
 			for (var y = -2; y < 3; ++y)
 			{
@@ -120,8 +120,6 @@ namespace BlazorFFT.Components.WebGL
 					await _context.UniformMatrixAsync(_matLocWorld, false, mFin.Values1D(true));
 					await _context.DrawElementsAsync(
 						Primitive.TRIANGLES, _indexBuffer.ElementCount, _indexBuffer.DataType, 0);
-
-					++ind;
 				}
 			}
 			await _context.EndBatchAsync();
@@ -129,34 +127,35 @@ namespace BlazorFFT.Components.WebGL
 
 		// This is based on spectrum size of 25. There is probably an algorithm that could
 		// be made that would simplify this greatly, but I just don't have the time.
-		private static readonly Dictionary<Point, int> _dicMap =
-			new Dictionary<Point, int>
-			{
-				{ new Point(0, 0), 0 },
-				{ new Point(-1, 0), 1 },
-				{ new Point(-1, -1), 2 },
-				{ new Point(0, -1), 3 },
-				{ new Point(1, -1), 4 },
-				{ new Point(1, 0), 5 },
-				{ new Point(1, 1), 6 },
-				{ new Point(0, 1), 7 },
-				{ new Point(-1, 1), 8 },
-				{ new Point(-2, 0), 9 },
-				{ new Point(-2, -1), 10 },
-				{ new Point(-2, -2), 11 },
-				{ new Point(-1, -2), 12 },
-				{ new Point(0, -2), 13 },
-				{ new Point(1, -2), 14 },
-				{ new Point(2, -2), 15 },
-				{ new Point(2, -1), 16 },
-				{ new Point(2, 0), 17 },
-				{ new Point(2, 1), 18 },
-				{ new Point(2, 2), 19 },
-				{ new Point(1, 2), 20 },
-				{ new Point(0, 2), 21 },
-				{ new Point(-1, 2), 22 },
-				{ new Point(-2, 2), 23 },
-				{ new Point(-2, 1), 24 }
-			};
+		private static readonly IReadOnlyDictionary<Point, int> _dicMap =
+			new ReadOnlyDictionary<Point, int>(
+				new Dictionary<Point, int>
+				{
+					{ new Point(0, 0), 0 },
+					{ new Point(-1, 0), 1 },
+					{ new Point(-1, -1), 2 },
+					{ new Point(0, -1), 3 },
+					{ new Point(1, -1), 4 },
+					{ new Point(1, 0), 5 },
+					{ new Point(1, 1), 6 },
+					{ new Point(0, 1), 7 },
+					{ new Point(-1, 1), 8 },
+					{ new Point(-2, 0), 9 },
+					{ new Point(-2, -1), 10 },
+					{ new Point(-2, -2), 11 },
+					{ new Point(-1, -2), 12 },
+					{ new Point(0, -2), 13 },
+					{ new Point(1, -2), 14 },
+					{ new Point(2, -2), 15 },
+					{ new Point(2, -1), 16 },
+					{ new Point(2, 0), 17 },
+					{ new Point(2, 1), 18 },
+					{ new Point(2, 2), 19 },
+					{ new Point(1, 2), 20 },
+					{ new Point(0, 2), 21 },
+					{ new Point(-1, 2), 22 },
+					{ new Point(-2, 2), 23 },
+					{ new Point(-2, 1), 24 }
+				});
 	}
 }
