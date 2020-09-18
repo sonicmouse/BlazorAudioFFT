@@ -16,6 +16,7 @@ namespace BlazorFFT.Components
 			where TRenderingContext : RenderingContext
 	{
 		protected string _centerButtonDivClass = "centerButtonDiv";
+		protected string _centerButtonDivBgClass = "centerButtonDivBg";
 
 		[Inject]
 		private IJSAudioInterop AudioInterop { get; set; }
@@ -54,6 +55,7 @@ namespace BlazorFFT.Components
 		{
 			await AudioInterop.StartAudioListenAsync(@delegate: this);
 			_centerButtonDivClass = "centerButtonDivHide";
+			_centerButtonDivBgClass = "centerButtonDivHide";
 		}
 
 		protected override async Task OnInitializedAsync()
