@@ -8,10 +8,18 @@ namespace BlazorFFT.Components
 {
 	public class WebGLAudioComponentBase : AudioComponentBase<WebGLContext>
 	{
+		protected override double SampleRate => 8000.0;
 		protected override int SpectrumSize => 25;
-		protected override double AudioAmplify => 1.0;
+		protected override double AudioAmplify => 5.0;
+		protected override int BufferSize => 256;
 
 		private AudioFFTGLProgram _program;
+
+		protected override (double, double) GetDisplayFrequencyRange(double maxFrequency)
+		{
+			// 8000 hz freq gives us 4000 hz max range, no need to adjust anything here
+			return base.GetDisplayFrequencyRange(maxFrequency);
+		}
 
 		protected override async Task<WebGLContext> CreateRenderingContextAsync(BECanvasComponent canvas)
 		{
@@ -26,7 +34,7 @@ namespace BlazorFFT.Components
 			StateHasChanged();
 		}
 
-		protected override void OnAudioBufferProcessed(long renderTimeMilliseconds)
+		protected override void OnAudioBufferProcessed()
 		{
 			StateHasChanged();
 		}
