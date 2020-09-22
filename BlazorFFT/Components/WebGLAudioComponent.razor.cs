@@ -10,7 +10,7 @@ namespace BlazorFFT.Components
 	{
 		protected override double SampleRate => 8000.0;
 		protected override int SpectrumSize => 25;
-		protected override double AudioAmplify => 5.0;
+		protected override double AudioAmplify => 3.0;
 		protected override int BufferSize => 256;
 
 		private AudioFFTGLProgram _program;
