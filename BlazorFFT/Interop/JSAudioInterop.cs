@@ -29,7 +29,7 @@ namespace BlazorFFT.Interop
 		ValueTask InitializeAudioListenAsync(int inputChannels, double sampleRate, int bufferSize);
 		ValueTask StartAudioListenAsync(IJSAudioInteropDelegate @delegate);
 		ValueTask StopAudioListenAsync();
-		double[] ConvertJSFloat32ArrayToManaged(object audioBufferFloat32, double amp);
+		double[] ConvertJSFloat32ArrayToManaged(object audioBufferFloat32, double amp = 1.0);
 	}
 
 	public sealed class JSAudioInterop : IJSAudioInterop
@@ -55,7 +55,7 @@ namespace BlazorFFT.Interop
 		public ValueTask StopAudioListenAsync() =>
 			_jsRuntime.InvokeVoidAsync("stopAudioListen");
 
-		public double[] ConvertJSFloat32ArrayToManaged(object audioBufferFloat32, double amp)
+		public double[] ConvertJSFloat32ArrayToManaged(object audioBufferFloat32, double amp = 1.0)
 		{
 			audioBufferFloat32 = audioBufferFloat32 ??
 				throw new ArgumentNullException(nameof(audioBufferFloat32));

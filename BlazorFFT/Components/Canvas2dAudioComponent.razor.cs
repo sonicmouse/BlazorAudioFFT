@@ -13,14 +13,19 @@ namespace BlazorFFT.Components
 		private string[] _spectrumGradientColors;
 		private LevelDropper[] _spectrumLevels;
 
-		protected override double SampleRate => 44100;
+		protected override double SampleRate => 8000.0;
 		protected override int BufferSize => 256;
 		protected override int SpectrumSize => 25;
-		protected override double AudioAmplify => 15;
+		protected override double AudioAmplify => 50.0;
+
+		protected override (double, double) GetDisplayFrequencyRange(double maxFrequency)
+		{
+			// 8000 hz freq gives us 4000 hz max range, no need to adjust anything here
+			return base.GetDisplayFrequencyRange(maxFrequency);
+		}
 
 		protected override Task<Canvas2DContext> CreateRenderingContextAsync(BECanvasComponent canvas)
 		{
-
 			return canvas.CreateCanvas2DAsync();
 		}
 
@@ -30,7 +35,7 @@ namespace BlazorFFT.Components
 			return Task.CompletedTask;
 		}
 
-		protected override void OnAudioBufferProcessed(long processTimeMilliseconds)
+		protected override void OnAudioBufferProcessed()
 		{
 			StateHasChanged();
 		}

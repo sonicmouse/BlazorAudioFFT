@@ -49,7 +49,10 @@ namespace BlazorFFT.Components
 
 		protected abstract Task OnResizedComponentAsync(TRenderingContext context, int width, int height);
 
-		protected abstract void OnAudioBufferProcessed(long renderTimeMilliseconds);
+		protected virtual (double, double) GetDisplayFrequencyRange(double maxFrequency) =>
+			(-1.0, -1.0);
+
+		protected abstract void OnAudioBufferProcessed();
 
 		protected async Task OnStartListeningToAudio(MouseEventArgs e)
 		{
@@ -60,14 +63,21 @@ namespace BlazorFFT.Components
 
 		protected override async Task OnInitializedAsync()
 		{
+			if(SpectrumSize > BufferSize / 2)
+			{
+				throw new InvalidOperationException(
+					$"{nameof(SpectrumSize)} must be less than or " +
+					$"equal do half the value of {nameof(BufferSize)}");
+			}
+
 			// shut down audio if it's currently running
-			if(await AudioInterop.HasAudioListenStartedAsync())
+			if (await AudioInterop.HasAudioListenStartedAsync())
 			{
 				await AudioInterop.StopAudioListenAsync();
 			}
 
-			// setup audio filter
-			_audioFilter.SetPassBands(1, _audioFilter.MaximumBandValue);
+			// setup audio filter (just allowing all bands through)
+			_audioFilter.SetPassBands(1, _audioFilter.MaximumFrequency);
 
 			// initialize audio
 			await AudioInterop.InitializeAudioListenAsync(
@@ -140,23 +150,19 @@ namespace BlazorFFT.Components
 		[JSInvokable]
 		public Task OnAudioBufferReceived(object audioBuffer32bitJson)
 		{
-			var sw = new Stopwatch();
-			sw.Start();
-
 			var buffer = AudioInterop.
 				ConvertJSFloat32ArrayToManaged(audioBuffer32bitJson, AudioAmplify);
 
 			_audioFilter.CreateSpectrum(buffer);
 
 			_spectrumBuffer ??= new double[SpectrumSize];
-			_audioFilter.CompressPreviousSpectrum(_spectrumBuffer, 0,
-				_audioFilter.MaximumBandValue / 2); // we don't care about the upper-half of the bands
 
-			sw.Stop();
-
+			var freqRange = GetDisplayFrequencyRange(_audioFilter.MaximumFrequency);
+			_audioFilter.CompressPreviousSpectrum(_spectrumBuffer, freqRange.Item1, freqRange.Item2);
+			
 			if (_bFirstRenderHandled)
 			{
-				OnAudioBufferProcessed(sw.ElapsedMilliseconds);
+				OnAudioBufferProcessed();
 			}
 
 			return Task.CompletedTask;

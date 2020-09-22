@@ -34,6 +34,7 @@ namespace BlazorFFT.Utilities
 			};
 
 			_spectrumComplexBuffer = new double[2 * _bufferSize];
+			// in an FFT, the bottom half is the valid spectrum
 			_spectrumBuffer = new double[_bufferSize / 2];
 		}
 
@@ -44,7 +45,7 @@ namespace BlazorFFT.Utilities
 			UpdateFilter();
 		}
 
-		public double MaximumBandValue => _sampleRate / 2.0;
+		public double MaximumFrequency => _sampleRate / 2.0;
 
 		private static bool IsPositivePowerOfTwo(int v) =>
 			(v > 0) && (v & (v - 1)) == 0;
@@ -56,7 +57,7 @@ namespace BlazorFFT.Utilities
 
 		private void UpdateFilter()
 		{
-			if ((_lowBand < 0) || (_hiBand < 0))
+			if ((_lowBand <= 0) || (_hiBand <= 0))
 			{
 				_filterBuffer = null;
 				return;
@@ -121,7 +122,7 @@ namespace BlazorFFT.Utilities
 					spectrumComplexBuff[i * 2] = cMult.Real;
 					spectrumComplexBuff[i * 2 + 1] = cMult.Imaginary;
 				}
-				//ApplyFFT(_spectrumComplexBuffer, false); // not doing what I had hoped.
+				// ApplyFFT(_spectrumComplexBuffer, false); // not doing what I had hoped.
 			}
 
 			var spectrumBuff = new Span<double>(_spectrumBuffer);
@@ -141,27 +142,27 @@ namespace BlazorFFT.Utilities
 			var spectrumSpan = new Span<double>(_spectrumBuffer);
 			var compressedSpan = new Span<double>(compressed);
 
-			if ((freqLowCutoff >= 0) || (freqHighCutoff >= 0))
+			if ((freqLowCutoff >= 0) && (freqHighCutoff >= 0))
 			{
 				var spectrumSpanTemp = new Span<double>(_spectrumBuffer);
 
-				var hi = freqHighCutoff / (_sampleRate / 2);
-				var lo = freqLowCutoff / (_sampleRate / 2);
+				var lo = freqLowCutoff / MaximumFrequency;
+				var hi = freqHighCutoff / MaximumFrequency;
 
-				var tHi = (int)Math.Round(_spectrumBuffer.Length * hi);
 				var tLo = (int)Math.Round(_spectrumBuffer.Length * lo);
+				var tHi = (int)Math.Round(_spectrumBuffer.Length * hi);
 
 				spectrumSpan = spectrumSpanTemp[tLo..tHi];
 			}
 
-			var groupSize = Math.Min(1, (int)Math.Round(
-				spectrumSpan.Length / (double)compressedSpan.Length));
+			var groupSize = Math.Max(1,
+				(int)(spectrumSpan.Length / (double)compressedSpan.Length));
 			var cind = 0;
 			for (var i = 0; (i < spectrumSpan.Length) &&
 				(cind < compressedSpan.Length); i += groupSize, ++cind)
 			{
 				var t = 0.0;
-				for (int x = 0; x < groupSize; ++x)
+				for (var x = 0; x < groupSize; ++x)
 				{
 					t += spectrumSpan[i + x];
 				}
