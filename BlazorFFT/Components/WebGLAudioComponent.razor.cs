@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace BlazorFFT.Components
 {
-	public class WebGLAudioComponentBase : AudioComponentBase<WebGLContext>
+	public class WebGLAudioComponentBase : SpectrumComponentBase<WebGLContext>
 	{
 		protected override double SampleRate => 8000.0;
 		protected override int SpectrumSize => 25;

@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace BlazorFFT.Components
 {
-	public class Canvas2dAudioComponentBase : AudioComponentBase<Canvas2DContext>
+	public class Canvas2dAudioComponentBase : SpectrumComponentBase<Canvas2DContext>
 	{
 		private string[] _spectrumGradientColors;
 		private LevelDropper[] _spectrumLevels;
