@@ -76,12 +76,18 @@ a:active {
 	text-align: center;
 }
 
+.rowVersion {
+	font-size:smaller;
+	color:lightgray;
+	text-align: center;
+}
+
 .centerButtonDiv {
 	min-height: 100%;
 	display: flex;
 	justify-content: center;
 	align-items: center;
-	position:relative;
+	position: relative;
 }
 
 .centerButtonDivBg {
