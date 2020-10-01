@@ -5,7 +5,7 @@ namespace BlazorFFT.Utilities
 {
 	public sealed class BandPassFilter
 	{
-		private readonly int _bufferSize;
+		private readonly int _fftSize;
 		private readonly double _sampleRate;
 		private readonly Lomont.LomontFFT _fft;
 
@@ -16,16 +16,16 @@ namespace BlazorFFT.Utilities
 		private readonly double[] _spectrumComplexBuffer;
 		private readonly double[] _spectrumBuffer;
 
-		public BandPassFilter(int bufferSize, double sampleRate)
+		public BandPassFilter(int fftSize, double sampleRate)
 		{
-			if(!IsPositivePowerOfTwo(bufferSize))
+			if(!IsPositivePowerOfTwo(fftSize))
 			{
-				throw new ArgumentException("Must be positive power of 2", nameof(bufferSize));
+				throw new ArgumentException("Must be positive power of 2", nameof(fftSize));
 			}
 
 			_lowBand = -1;
 			_hiBand = -1;
-			_bufferSize = bufferSize;
+			_fftSize = fftSize;
 			_sampleRate = sampleRate;
 			_fft = new Lomont.LomontFFT
 			{
@@ -33,9 +33,10 @@ namespace BlazorFFT.Utilities
 				B = -1
 			};
 
-			_spectrumComplexBuffer = new double[2 * _bufferSize];
+			// double the size for the imaginary part
+			_spectrumComplexBuffer = new double[2 * _fftSize];
 			// in an FFT, the bottom half is the valid spectrum
-			_spectrumBuffer = new double[_bufferSize / 2];
+			_spectrumBuffer = new double[_fftSize / 2];
 		}
 
 		public void SetPassBands(double low, double high)
@@ -64,25 +65,25 @@ namespace BlazorFFT.Utilities
 			}
 
 			// derive filter
-			var filterBuff = new double[_bufferSize];
-			for (var i = 0; i < _bufferSize; ++i)
+			var filterBuff = new double[_fftSize];
+			for (var i = 0; i < _fftSize; ++i)
 			{
 				double calcSinc(double freq, int index)
 				{
 					static double sinc(double x) =>
 						x == 0 ? 1 : Math.Sin(Math.PI * x) / (Math.PI * x);
-					return 2.0 * freq / _sampleRate * sinc(2.0 * freq * (index - (_bufferSize / 2.0)) / _sampleRate);
+					return 2.0 * freq / _sampleRate * sinc(2.0 * freq * (index - (_fftSize / 2.0)) / _sampleRate);
 				}
 
 				double calcBlackman(int index) =>
-					0.42 - 0.5 * Math.Cos(2.0 * Math.PI * index / _bufferSize) + 0.08 * Math.Cos(4.0 * Math.PI * index / _bufferSize);
+					0.42 - 0.5 * Math.Cos(2.0 * Math.PI * index / _fftSize) + 0.08 * Math.Cos(4.0 * Math.PI * index / _fftSize);
 
 				filterBuff[i] = calcBlackman(i) * (calcSinc(_lowBand, i) - calcSinc(_hiBand, i));
 			}
 
 			// convert filter to complex
-			var filterComplexTemp = new double[_bufferSize * 2];
-			for(var i = 0; i < _bufferSize; ++i)
+			var filterComplexTemp = new double[_fftSize * 2];
+			for(var i = 0; i < _fftSize; ++i)
 			{
 				filterComplexTemp[i * 2] = filterBuff[i];
 			}
@@ -96,14 +97,14 @@ namespace BlazorFFT.Utilities
 
 		public double[] CreateSpectrum(double[] audioBuffer)
 		{
-			if(audioBuffer.Length != _bufferSize)
+			if(audioBuffer.Length != _fftSize)
 			{
 				throw new ArgumentException("Invalid length", nameof(audioBuffer));
 			}
 
 			var spectrumComplexBuff = new Span<double>(_spectrumComplexBuffer);
 			var audioBuff = new Span<double>(audioBuffer);
-			for (var i = 0; i < _bufferSize; ++i)
+			for (var i = 0; i < _fftSize; ++i)
 			{
 				spectrumComplexBuff[i * 2] = audioBuff[i];
 				spectrumComplexBuff[i * 2 + 1] = 0;
@@ -114,7 +115,7 @@ namespace BlazorFFT.Utilities
 			if (_filterBuffer != null)
 			{
 				var filterBuff = new Span<double>(_filterBuffer);
-				for (var i = 0; i < _bufferSize; ++i)
+				for (var i = 0; i < _fftSize; ++i)
 				{
 					var cAudio = new Complex(spectrumComplexBuff[i * 2], spectrumComplexBuff[i * 2 + 1]);
 					var cFilter = new Complex(filterBuff[i * 2], filterBuff[i * 2 + 1]);

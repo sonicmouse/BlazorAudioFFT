@@ -5,7 +5,7 @@
       <img class="imgBlazor" src="images/blazor.png" alt="Blazor">
    </div>
    <div class="rowTitle">
-      Made With Blazor WASM
+      Made With Blazor Web Assembly
    </div>
    <div class="rowInfo">
       The following applications will request audio from your microphone and process
@@ -18,10 +18,21 @@
    <div class="rowLink">
       <a href="/WebGLFFT">WebGL Audio FFT</a>
    </div>
+    <div class="rowLink">
+      <a href="/NoteFinderFFT">Note Finder FFT</a>
+   </div>
    <div class="rowSep" />
    <div class="rowFoot">
 	   <a href="https://github.com/sonicmouse/BlazorAudioFFT">GitHub</a> | 
        <a href="https://dotnet.microsoft.com/apps/aspnet/web-apps/blazor">Bl@zor</a> | 
        <a href="https://stackoverflow.com/users/1204153/andy">Stack Overflow</a>
    </div>
+   <div class="rowVersion">
+      @Version
+   </div>
 </div>
+
+@code{
+    private string Version =>
+        $"v{Assembly.GetExecutingAssembly().GetCustomAttribute<AssemblyInformationalVersionAttribute>().InformationalVersion}";
+}

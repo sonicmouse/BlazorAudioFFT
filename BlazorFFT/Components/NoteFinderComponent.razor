@@ -1,0 +1,8 @@
+﻿@inherits NoteFinderComponentBase
+
+<div class="@_centerButtonDivBgClass"></div>
+<div class="@_centerButtonDivClass">
+	<button class="centerButton" @onclick="OnStartListeningToAudio" type="button">Start Note Finder FFT</button>
+</div>
+
+<BECanvas Width="10" Height="10" @ref="_canvasReference" ></BECanvas>

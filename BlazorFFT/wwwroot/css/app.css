@@ -25,10 +25,10 @@ a:active {
 
 .divMain {
 	width: 325px;
-	height: 350px;
+	height: 375px;
 	position: fixed;
 	margin-left: -150px;
-	margin-top: -175px;
+	margin-top: -188px;
 	top: 50%;
 	left: 50%;
 }
@@ -76,12 +76,18 @@ a:active {
 	text-align: center;
 }
 
+.rowVersion {
+	font-size:smaller;
+	color:lightgray;
+	text-align: center;
+}
+
 .centerButtonDiv {
 	min-height: 100%;
 	display: flex;
 	justify-content: center;
 	align-items: center;
-	position:relative;
+	position: relative;
 }
 
 .centerButtonDivBg {

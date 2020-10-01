@@ -1,6 +1,5 @@
 ﻿using Blazor.Extensions;
 using BlazorFFT.Interop;
-using BlazorFFT.Utilities;
 using BlazorFFT.Utilities.Extensions;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
@@ -15,8 +14,7 @@ namespace BlazorFFT.Components
 		: ComponentBase, IJSAudioInteropDelegate, IJSSizeInteropDelegate
 			where TRenderingContext : RenderingContext
 	{
-		protected string _centerButtonDivClass = "centerButtonDiv";
-		protected string _centerButtonDivBgClass = "centerButtonDivBg";
+		#region Properties and Members
 
 		[Inject]
 		private IJSAudioInterop AudioInterop { get; set; }
@@ -26,34 +24,36 @@ namespace BlazorFFT.Components
 
 		protected virtual double SampleRate => 44100;
 		protected virtual int BufferSize => 512;
-		protected virtual int SpectrumSize => 64;
-		protected virtual double AudioAmplify => 25;
+		protected virtual double AudioAmplify => 1.0;
+
+		// These 3 members must be exosed
+		protected string _centerButtonDivClass = "centerButtonDiv";
+		protected string _centerButtonDivBgClass = "centerButtonDivBg";
+		protected BECanvasComponent _canvasReference;
 
 		private TRenderingContext _renderingContext;
-		protected BECanvasComponent _canvasReference; // needs to be exposed
-
-		private double[] _spectrumBuffer;
 		private int _canvasWidth, _canvasHeight;
-		private readonly BandPassFilter _audioFilter;
 		private bool _bFirstRenderHandled;
 
-		protected AudioComponentBase()
-		{
-			_audioFilter = new BandPassFilter(BufferSize, SampleRate);
-		}
+		#endregion
 
+		#region Abstract
 		protected abstract Task<TRenderingContext> CreateRenderingContextAsync(BECanvasComponent canvas);
 
-		protected abstract Task OnRenderAsync(
-			bool firstRender, TRenderingContext context, double[] spectrumBuffer, int width, int height);
+		protected abstract void OnProcessAudioBuffer(double[] buffer);
+
+		protected abstract Task OnRenderAsync(bool firstRender, TRenderingContext context, int width, int height);
 
 		protected abstract Task OnResizedComponentAsync(TRenderingContext context, int width, int height);
 
-		protected virtual (double, double) GetDisplayFrequencyRange(double maxFrequency) =>
-			(-1.0, -1.0);
-
 		protected abstract void OnAudioBufferProcessed();
+		#endregion
 
+		#region Page Methods
+
+		/// <summary>
+		/// This should be
+		/// </summary>
 		protected async Task OnStartListeningToAudio(MouseEventArgs e)
 		{
 			await AudioInterop.StartAudioListenAsync(@delegate: this);
@@ -61,23 +61,17 @@ namespace BlazorFFT.Components
 			_centerButtonDivBgClass = "centerButtonDivHide";
 		}
 
+		#endregion
+
+		#region Component Overrides
+
 		protected override async Task OnInitializedAsync()
 		{
-			if(SpectrumSize > BufferSize / 2)
-			{
-				throw new InvalidOperationException(
-					$"{nameof(SpectrumSize)} must be less than or " +
-					$"equal do half the value of {nameof(BufferSize)}");
-			}
-
 			// shut down audio if it's currently running
 			if (await AudioInterop.HasAudioListenStartedAsync())
 			{
 				await AudioInterop.StopAudioListenAsync();
 			}
-
-			// setup audio filter (just allowing all bands through)
-			_audioFilter.SetPassBands(1, _audioFilter.MaximumFrequency);
 
 			// initialize audio
 			await AudioInterop.InitializeAudioListenAsync(
@@ -97,9 +91,9 @@ namespace BlazorFFT.Components
 				{
 					_renderingContext = await CreateRenderingContextAsync(_canvasReference);
 
-					var w = await SizeInterop.GetWindowWidthAsync();
-					var h = await SizeInterop.GetWindowHeightAsync();
-					await SetComponentSizeAsync(w, h);
+					var width = await SizeInterop.GetWindowWidthAsync();
+					var height = await SizeInterop.GetWindowHeightAsync();
+					await SetComponentSizeAsync(width, height);
 
 					_bFirstRenderHandled = true;
 				}
@@ -111,7 +105,7 @@ namespace BlazorFFT.Components
 						throw new InvalidOperationException($"{nameof(_renderingContext)} is in an invalid state");
 					}
 
-					await OnRenderAsync(firstRender, _renderingContext, _spectrumBuffer, _canvasWidth, _canvasHeight);
+					await OnRenderAsync(firstRender, _renderingContext, _canvasWidth, _canvasHeight);
 				}
 				else
 				{
@@ -123,6 +117,9 @@ namespace BlazorFFT.Components
 				await base.OnAfterRenderAsync(firstRender);
 			}
 		}
+		#endregion
+
+		#region Utilities
 
 		private async Task SetComponentSizeAsync(int width, int height)
 		{
@@ -134,6 +131,8 @@ namespace BlazorFFT.Components
 				_canvasHeight = height;
 			}
 		}
+
+		#endregion
 
 		#region IJSSizeInteropDelegate
 
@@ -153,12 +152,7 @@ namespace BlazorFFT.Components
 			var buffer = AudioInterop.
 				ConvertJSFloat32ArrayToManaged(audioBuffer32bitJson, AudioAmplify);
 
-			_audioFilter.CreateSpectrum(buffer);
-
-			_spectrumBuffer ??= new double[SpectrumSize];
-
-			var freqRange = GetDisplayFrequencyRange(_audioFilter.MaximumFrequency);
-			_audioFilter.CompressPreviousSpectrum(_spectrumBuffer, freqRange.Item1, freqRange.Item2);
+			OnProcessAudioBuffer(buffer);
 			
 			if (_bFirstRenderHandled)
 			{
